@@ -1,5 +1,8 @@
 # EasyRpc
 
+### 使用限制
+* java 对 java 的调用
+* spring环境
 ### 服务端
 * 编写接口, 使用RpcService作为注解   
 >    
