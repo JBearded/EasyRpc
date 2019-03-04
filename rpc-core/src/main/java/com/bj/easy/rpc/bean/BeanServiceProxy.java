@@ -1,6 +1,5 @@
-package com.bj.easy.rpc.handler;
+package com.bj.easy.rpc.bean;
 
-import com.bj.easy.rpc.bean.RpcBeanFactory;
 import com.bj.easy.rpc.message.RpcRequest;
 import com.bj.easy.rpc.message.RpcResponse;
 import net.sf.cglib.reflect.FastClass;
@@ -10,7 +9,7 @@ import net.sf.cglib.reflect.FastMethod;
  * @author xiejunquan
  * @create 2019/2/13 16:15
  */
-public class ImpServiceProxy {
+public class BeanServiceProxy {
 
     public static RpcResponse invoke(RpcRequest request){
         RpcResponse response = new RpcResponse();

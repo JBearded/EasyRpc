@@ -1,5 +1,6 @@
 package com.bj.easy.rpc.bean.spring;
 
+import com.bj.easy.rpc.bean.ServiceProxyFactoryBean;
 import com.bj.easy.rpc.bean.annotation.RpcService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +41,7 @@ public class RpcServiceClientScanner extends ClassPathBeanDefinitionScanner {
                 ScannedGenericBeanDefinition definition = (ScannedGenericBeanDefinition) holder.getBeanDefinition();
                 definition.getPropertyValues().add("serverAddress", servers);
                 definition.getPropertyValues().add("iface", definition.getBeanClassName());
-                definition.setBeanClass(RpcServiceFactoryBean.class);
+                definition.setBeanClass(ServiceProxyFactoryBean.class);
             }catch (Exception e){
                 logger.error("error to set rpc service proxy", e);
             }

@@ -1,4 +1,4 @@
-package com.bj.easy.rpc.bean.spring;
+package com.bj.easy.rpc.bean;
 
 import com.bj.easy.rpc.manager.NettyChannelManager;
 import com.bj.easy.rpc.message.*;
@@ -15,9 +15,9 @@ import java.lang.reflect.Proxy;
  * @author xiejunquan
  * @create 2019/2/13 17:33
  */
-public class RpcServiceFactoryBean implements FactoryBean<Object> {
+public class ServiceProxyFactoryBean implements FactoryBean<Object> {
 
-    private final static Logger logger = LoggerFactory.getLogger(RpcServiceFactoryBean.class);
+    private final static Logger logger = LoggerFactory.getLogger(ServiceProxyFactoryBean.class);
 
     private String serverAddress;
     private Class iface;

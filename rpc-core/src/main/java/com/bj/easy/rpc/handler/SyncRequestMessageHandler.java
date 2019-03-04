@@ -1,5 +1,6 @@
 package com.bj.easy.rpc.handler;
 
+import com.bj.easy.rpc.bean.BeanServiceProxy;
 import com.bj.easy.rpc.message.*;
 import io.netty.channel.Channel;
 import org.slf4j.Logger;
@@ -16,7 +17,7 @@ public class SyncRequestMessageHandler implements MessageHandler{
     @Override
     public void messageReceived(Channel channel, Message message) {
         RpcRequest request = (RpcRequest) message.getBody();
-        RpcResponse res = ImpServiceProxy.invoke(request);
+        RpcResponse res = BeanServiceProxy.invoke(request);
         Message<RpcResponse> resMessage = new Message(message.getId(), MessageType.RESPONSE.id, res);
         Executor.asyncRequest(channel, resMessage);
     }
