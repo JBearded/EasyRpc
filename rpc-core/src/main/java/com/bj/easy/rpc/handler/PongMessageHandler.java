@@ -1,6 +1,7 @@
 package com.bj.easy.rpc.handler;
 
 import com.bj.easy.rpc.manager.MessageManager;
+import com.bj.easy.rpc.manager.SyncManager;
 import com.bj.easy.rpc.message.Message;
 import io.netty.channel.Channel;
 import org.slf4j.Logger;
@@ -16,5 +17,6 @@ public class PongMessageHandler implements MessageHandler{
     @Override
     public void messageReceived(Channel channel, Message message) {
         MessageManager.put(message);
+        SyncManager.notifyAll(message.getId());
     }
 }
