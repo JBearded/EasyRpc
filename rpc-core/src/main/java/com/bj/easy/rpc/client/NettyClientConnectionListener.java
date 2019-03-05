@@ -1,6 +1,5 @@
 package com.bj.easy.rpc.client;
 
-import com.bj.easy.rpc.manager.NettyChannelManager;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.EventLoop;
@@ -37,8 +36,8 @@ public class NettyClientConnectionListener implements ChannelFutureListener {
             }, 30L, TimeUnit.SECONDS);
         }else{
             SocketChannel socketChannel = (SocketChannel) future.channel();
-            NettyChannelManager.add(nettyClient.getHost(), nettyClient.getPort(), socketChannel);
             nettyClient.setSocketChannel(socketChannel);
+            nettyClient.getActiveListener().active(nettyClient.getHost(), nettyClient.getPort(), socketChannel);
             logger.info("client start " + nettyClient.getHost() + ":" + nettyClient.getPort() + "............");
         }
     }

@@ -11,6 +11,8 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author xiejunquan
@@ -18,8 +20,12 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
  */
 public class NettyServer {
 
+    private final static Logger logger = LoggerFactory.getLogger(NettyServer.class);
+
     private int port;
     private NioServerSocketChannel serverSocketChannel;
+    private EventLoopGroup boss;
+    private EventLoopGroup worker;
     private Thread thread;
 
     public NettyServer(int port) {
@@ -31,8 +37,8 @@ public class NettyServer {
             @Override
             public void run() {
                 try{
-                    EventLoopGroup boss = new NioEventLoopGroup();
-                    EventLoopGroup worker = new NioEventLoopGroup();
+                    boss = new NioEventLoopGroup();
+                    worker = new NioEventLoopGroup();
                     ServerBootstrap bootstrap = new ServerBootstrap();
                     bootstrap.group(boss, worker);
                     bootstrap.channel(NioServerSocketChannel.class);
@@ -50,7 +56,7 @@ public class NettyServer {
                     ChannelFuture channelFuture = bootstrap.bind(port).sync();
                     if (channelFuture.isSuccess()){
                         serverSocketChannel = (NioServerSocketChannel) channelFuture.channel();
-                        System.out.println("server start ......");
+                        logger.info(port + " server start ......");
                     }
                 }catch (Exception e){
                     throw new RuntimeException(e);
@@ -62,7 +68,13 @@ public class NettyServer {
     }
 
     public void destroy(){
-        serverSocketChannel.close();
+        try{
+            boss.close();
+            worker.close();
+            serverSocketChannel.close().awaitUninterruptibly();
+        }catch (Exception e){
+            logger.warn("failed to close netty server", e);
+        }
     }
 
 }

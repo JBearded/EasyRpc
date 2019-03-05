@@ -16,4 +16,9 @@
         <constructor-arg name="servicePackage" value="com.bj.easy.test.service"></constructor-arg>
     </bean>
 
+    <bean id="rpcServiceServer2" class="com.bj.easy.rpc.bean.spring.RpcServiceServer">
+        <constructor-arg name="port" value="9988"></constructor-arg>
+        <constructor-arg name="servicePackage" value="com.bj.easy.test.service"></constructor-arg>
+    </bean>
+
 </beans>

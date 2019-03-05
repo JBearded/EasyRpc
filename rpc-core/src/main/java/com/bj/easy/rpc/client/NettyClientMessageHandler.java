@@ -32,6 +32,7 @@ public class NettyClientMessageHandler extends NettyMessageHandler {
                 logger.info("reconnect to " + nettyClient.getHost() + ":" + nettyClient.getPort() + "............");
             }
         }, 30L, TimeUnit.SECONDS);
+        nettyClient.getActiveListener().inactive(nettyClient.getHost(), nettyClient.getPort());
         super.channelInactive(ctx);
     }
 }

@@ -18,7 +18,9 @@ public enum MessageType {
     PONG((byte)2, "pong", new PongMessageHandler()),
     SYNC_REQUEST((byte)3, "syncRequest", new SyncRequestMessageHandler()),
     ASYNC_REQUEST((byte)4, "asyncRequest", new AsyncRequestMessageHandler()),
-    RESPONSE((byte)5, "response", new ResponseMessageHandler());
+    RESPONSE((byte)5, "response", new ResponseMessageHandler()),
+    SUBSCRIBE((byte)6, "subscribe", null),
+    PUBLISH((byte)7, "publish", null);
     public final byte id;
     public final String desc;
     public final MessageHandler handler;

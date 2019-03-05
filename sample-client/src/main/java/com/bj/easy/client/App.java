@@ -13,6 +13,13 @@ public class App {
     public static void main(String[] args) {
         ApplicationContext context = new ClassPathXmlApplicationContext("spring.xml");
         LoginService loginService = context.getBean(LoginService.class);
-        System.out.println(loginService.login("大胡子", ""));
+        for(int i = 0; i < 10; i++){
+            try{
+                System.out.println(loginService.login("大胡子", ""));
+                Thread.sleep(1000 * 10);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
     }
 }

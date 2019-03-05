@@ -1,6 +1,6 @@
 package com.bj.easy.rpc.bean;
 
-import com.bj.easy.rpc.manager.NettyChannelManager;
+import com.bj.easy.rpc.loadbalance.LoadBalance;
 import com.bj.easy.rpc.message.*;
 import io.netty.channel.socket.SocketChannel;
 import org.slf4j.Logger;
@@ -10,6 +10,7 @@ import org.springframework.beans.factory.FactoryBean;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.Map;
 
 /**
  * @author xiejunquan
@@ -19,7 +20,9 @@ public class ServiceProxyFactoryBean implements FactoryBean<Object> {
 
     private final static Logger logger = LoggerFactory.getLogger(ServiceProxyFactoryBean.class);
 
-    private String serverAddress;
+    private String appId;
+    private Map<String, SocketChannel> channels;
+    private LoadBalance loadBalance;
     private Class iface;
 
     @Override
@@ -35,7 +38,6 @@ public class ServiceProxyFactoryBean implements FactoryBean<Object> {
                         }
 
                         RpcRequest request = new RpcRequest();
-                        request.setServerAddress(serverAddress);
                         request.setCreateMillisTime(System.currentTimeMillis());
                         request.setClassName(method.getDeclaringClass().getName());
                         request.setMethodName(method.getName());
@@ -43,7 +45,11 @@ public class ServiceProxyFactoryBean implements FactoryBean<Object> {
                         request.setParameters(args);
                         Class<?> returnClass = method.getReturnType();
 
-                        SocketChannel socketChannel = NettyChannelManager.get(serverAddress);
+                        SocketChannel socketChannel = getLoadbalanceChannel();
+                        System.out.println(socketChannel);
+                        if (socketChannel == null) {
+                            throw new Exception("socketChannel is null, channels:" + channels);
+                        }
                         if(returnClass == void.class){
                             Message message = new Message(MessageID.get(), MessageType.ASYNC_REQUEST.id, request);
                             Executor.asyncRequest(socketChannel, message);
@@ -75,8 +81,31 @@ public class ServiceProxyFactoryBean implements FactoryBean<Object> {
         return true;
     }
 
-    public void setServerAddress(String serverAddress) {
-        this.serverAddress = serverAddress;
+    public SocketChannel getLoadbalanceChannel(){
+        if(channels == null || channels.isEmpty()){
+            return null;
+        }
+        int index = loadBalance.getIndex("");
+        int begin = 0;
+        for(SocketChannel socketChannel : channels.values()){
+            if(begin == index){
+                return socketChannel;
+            }
+            begin++;
+        }
+        return null;
+    }
+
+    public void setAppId(String appId) {
+        this.appId = appId;
+    }
+
+    public void setLoadBalance(LoadBalance loadBalance) {
+        this.loadBalance = loadBalance;
+    }
+
+    public void setChannels(Map<String, SocketChannel> channels) {
+        this.channels = channels;
     }
 
     public void setIface(Class<?> iface) {

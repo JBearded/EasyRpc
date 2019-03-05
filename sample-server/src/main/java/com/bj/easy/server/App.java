@@ -1,5 +1,6 @@
 package com.bj.easy.server;
 
+import com.bj.easy.rpc.bean.spring.RpcServiceServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -18,9 +19,13 @@ public class App {
     private final static ReentrantLock LOCK = new ReentrantLock();
     private final static Condition STOP = LOCK.newCondition();
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("spring.xml");
         context.start();
+        Thread.sleep(1000 * 60);
+        RpcServiceServer serviceServer = (RpcServiceServer) context.getBean("rpcServiceServer2");
+        serviceServer.destroy();
+
         Runtime.getRuntime().addShutdownHook(new Thread(
                 new ShutdownHookRunnable(context),
                 "StartMain-shutdown-hook"));

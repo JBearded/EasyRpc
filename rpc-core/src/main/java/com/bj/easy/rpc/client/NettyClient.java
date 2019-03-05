@@ -16,16 +16,20 @@ import io.netty.channel.socket.nio.NioSocketChannel;
  */
 public class NettyClient {
 
-    private String host;
-    private int port;
+    private final String appId;
+    private final String host;
+    private final int port;
+    private NettyChannelActiveListener activeListener;
     private EventLoopGroup eventLoopGroup;
     private Bootstrap bootstrap;
     private NettyClientConnectionListener connectionListener;
     private SocketChannel socketChannel;
 
-    public NettyClient(String host, int port) {
+    public NettyClient(String appId, String host, int port, NettyChannelActiveListener activeListener) {
+        this.appId = appId;
         this.host = host;
         this.port = port;
+        this.activeListener = activeListener;
         this.eventLoopGroup = new NioEventLoopGroup();
         this.bootstrap = new Bootstrap();
         this.connectionListener = new NettyClientConnectionListener(this);
@@ -61,6 +65,10 @@ public class NettyClient {
         return socketChannel;
     }
 
+    public String getAppId() {
+        return appId;
+    }
+
     public String getHost() {
         return host;
     }
@@ -69,9 +77,13 @@ public class NettyClient {
         return port;
     }
 
+    public NettyChannelActiveListener getActiveListener() {
+        return activeListener;
+    }
+
     public void destroy(){
-        socketChannel.close();
         eventLoopGroup.shutdownGracefully();
+        socketChannel.close().awaitUninterruptibly();
     }
 
     @Override

@@ -40,18 +40,14 @@
 * 导入接口模块(文件)
 * 配置spring配置
 >
-    <context:component-scan base-package="com.bj.easy.test.service"/>
-
-    <bean id="rpcServiceClients" class="com.bj.easy.rpc.bean.spring.RpcServiceClients" destroy-method="destroy">
-        <constructor-arg name="appId" value="921106"></constructor-arg>
-        <constructor-arg name="servicePackage">
-            <map>
-                <entry key="127.0.0.1:9999" value="com.bj.easy.test.service.api"></entry>
-            </map>
-        </constructor-arg>
+    <bean id="rpcServiceClients" class="com.bj.easy.rpc.bean.spring.RpcServiceClient" destroy-method="destroy">
+        <constructor-arg name="appId" value="921106"/>
+        <constructor-arg name="packages" value="com.bj.easy.test.service.api"/>
+        <constructor-arg name="servers" value="127.0.0.1:9999"/>
     </bean>
 * 启动客户端
 > 
     ApplicationContext context = new ClassPathXmlApplicationContext("spring.xml");
     LoginService loginService = context.getBean(LoginService.class);
     System.out.println(loginService.login("大胡子", ""));
+   
